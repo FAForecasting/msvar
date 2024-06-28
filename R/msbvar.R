@@ -137,7 +137,7 @@ msbvar <- function(Y, z = NULL, p, h,
 # blkopt() -- the block optimizer for MSBVAR and MS models
 ############################################################
 
-blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms) {
+blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms, tol = sqrt(.Machine$double.eps)) {
   m <- ncol(Y)
   n <- nrow(Y) # later, definition of n will change
   h <- nrow(Qhat.start)
@@ -237,7 +237,7 @@ blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms) {
     beta0.it <- optim(
       par = c(beta0.it), fn = llf.msar, Y = Yregmat, X = Xregmat, p = p,
       theta = theta.it, Q = Qhat.it, optstr = "beta0",
-      ms.switch = indms, method = "BFGS"
+      ms.switch = indms, method = "BFGS", control = list(reltol = tol)
     )$par
 
     if (length(grep("I", indms)) == 0) beta0.it <- array(beta0.it[1:m], c(m, 1, h))
@@ -250,7 +250,7 @@ blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms) {
         par = c(betap.it), fn = llf.msar, Y = Yregmat,
         X = Xregmat, p = p,
         theta = theta.it, Q = Qhat.it, optstr = "betap",
-        ms.switch = indms, method = "BFGS"
+        ms.switch = indms, method = "BFGS", control = list(reltol = tol)
       )$par
 
       # need to check below line...
@@ -264,7 +264,7 @@ blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms) {
       sig2.it <- optim(
         par = c(sig2.it), fn = llf.msar, Y = Yregmat, X = Xregmat, p = p,
         theta = theta.it, Q = Qhat.it, optstr = "sig2",
-        ms.switch = indms, method = "BFGS"
+        ms.switch = indms, method = "BFGS", control = list(reltol = tol)
       )$par
 
       if (length(grep("H", indms)) == 0) {
@@ -278,7 +278,7 @@ blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms) {
         par = c(sig2.lower), fn = llf.msar, Y = Yregmat,
         X = Xregmat, p = p,
         theta = theta.it, Q = Qhat.it, optstr = "sig2",
-        ms.switch = indms, method = "BFGS"
+        ms.switch = indms, method = "BFGS", control = list(reltol = tol)
       )$par
 
       sig2.it <- array(NA, c(m, m, h))
@@ -299,7 +299,7 @@ blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms) {
       par = c(Qhat.it[, 1:(h - 1)]), fn = llf.msar, Y = Yregmat,
       X = Xregmat, p = p,
       theta = theta.it, Q = Qhat.it, optstr = "Qhat",
-      ms.switch = indms, method = "BFGS"
+      ms.switch = indms, method = "BFGS", control = list(reltol = tol)
     )$par
 
     Qhat.it <- matrix(Qhat.it, nrow = h, ncol = h - 1)

@@ -20,12 +20,14 @@ Rcpp::List hamiltonFilter(
   // or multivariate Normal density given parameter values
   Eigen::MatrixXd ylik = Eigen::MatrixXd::Zero(bigt - p, h);
   Eigen::MatrixXd ypwlik = Eigen::MatrixXd::Zero(bigt - p, h * h);
+  Eigen::RowVectorXd tmpfit;
+  Eigen::MatrixXd matmultwo;
   for (int iterh = 0; iterh < h; iterh++) {
     double detsig2 = std::abs(sig2.middleCols(iterh * m, m).determinant());
     Eigen::MatrixXd invsig2 = sig2.middleCols(iterh * m, m).inverse();
     for (int itert = 0; itert < bigt - p; itert++) {
-      Eigen::RowVectorXd tmpfit = e.middleCols(iterh * m, m).row(itert);
-      Eigen::MatrixXd matmultwo = tmpfit * invsig2 * tmpfit.transpose();
+      tmpfit = e.middleCols(iterh * m, m).row(itert);
+      matmultwo = tmpfit * invsig2 * tmpfit.transpose();
       ylik(itert, iterh) = std::max(std::exp(-(m / 2.0) * std::log(2.0 * M_PI) - (0.5 * std::log(detsig2)) - (0.5 * matmultwo(0, 0))), std::numeric_limits<double>::epsilon());
     }
   }

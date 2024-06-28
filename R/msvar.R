@@ -4,7 +4,7 @@
 # 20120109 : Initial version by Ryan Davis
 
 #' @export
-msvar <- function(Y, p, h, niterblkopt = 10) {
+msvar <- function(Y, p, h, niterblkopt = 10, tol = sqrt(.Machine$double.eps)) {
   # Switching indicator: 'IAH' totally switching
   # fixed for now
   indms <- "IAH"
@@ -50,7 +50,7 @@ msvar <- function(Y, p, h, niterblkopt = 10) {
   blkopt.est <- blkopt(
     Y = Y, p = p, thetahat.start = thetahat.start,
     Qhat.start = Qhat.start, niter = niterblkopt,
-    indms
+    indms, tol = tol
   )
 
 
