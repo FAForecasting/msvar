@@ -20,32 +20,16 @@ predict.MSVAR <- function (x, h, samples, Z_init = NULL) {
   # Draw states at time T
   states <- sample(state_vec, samples, replace = T, prob = tail(x$fp, 1))
   forecasts <- array(NA, dim = c(h, x$m, samples))
-  for (i in seq_len(samples)) {
-    # Simulate the path of states
-    state1 <- sample(state_vec, 1, replace = T, prob = x$Q[states[i], ])
-    path <- c(state1, rep(0, h - 1))
-    for (j in seq_len(h)[-1]) {
-      path[j] <- sample(state_vec, 1, replace = T, prob = x$Q[path[j - 1], ])
-    }
-    # Create the forecast
-    fcst <- matrix(NA, h, x$m)
 
-    # Get the initial Z vector
-    Z <- Z_init
-    for (j in seq_len(h)) {
-      # Get the coefficient matrix to use
-      A <- x$hreg$Bk[, , path[j]]
-      fcst[j, ] <- t(A) %*% c(Z, 1)
-
-      # Add error sample
-      fcst[j, ] <- fcst[j, ] + t(sigmaU[[path[j]]]) %*% rnorm(x$m)
-
-      # Modify Z
-      Z <- c(fcst[j, ], Z[seq_len(x$m * (x$p - 1))])
-    }
-    # Store forecast
-    forecasts[, , i] <- fcst
+  Bk_cpp <- matrix(x$hreg$Bk, dim(x$hreg$Bk)[1])
+  sigmaU_cpp <- matrix(NA, nrow(sigmaU[[1]]), nrow(sigmaU[[1]]) * length(sigmaU))
+  for (i in seq_along(sigmaU)) {
+    sigmaU_cpp[, ((i - 1) * nrow(sigmaU[[1]]) + 1):(i * nrow(sigmaU[[1]]))] <- sigmaU[[i]]
   }
+
+  forecasts <- predict_cpp(samples, x$Q, Bk_cpp, sigmaU_cpp, tail(x$fp, 1), h, x$m, x$p, Z_init)
+  forecasts <- array(forecasts, dim = c(h, x$m, samples))
+
   return(forecasts)
 }
 

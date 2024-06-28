@@ -28,9 +28,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// predict_cpp
+Eigen::MatrixXd predict_cpp(int samples, Eigen::Map<Eigen::MatrixXd> Q, Eigen::Map<Eigen::MatrixXd> Bk, Eigen::Map<Eigen::MatrixXd> sigmaU, Eigen::Map<Eigen::VectorXd> fp_last, int h, int m, int p, Eigen::Map<Eigen::VectorXd> Z_init);
+RcppExport SEXP _msvar_predict_cpp(SEXP samplesSEXP, SEXP QSEXP, SEXP BkSEXP, SEXP sigmaUSEXP, SEXP fp_lastSEXP, SEXP hSEXP, SEXP mSEXP, SEXP pSEXP, SEXP Z_initSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type samples(samplesSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::MatrixXd> >::type Q(QSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::MatrixXd> >::type Bk(BkSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::MatrixXd> >::type sigmaU(sigmaUSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::VectorXd> >::type fp_last(fp_lastSEXP);
+    Rcpp::traits::input_parameter< int >::type h(hSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::VectorXd> >::type Z_init(Z_initSEXP);
+    rcpp_result_gen = Rcpp::wrap(predict_cpp(samples, Q, Bk, sigmaU, fp_last, h, m, p, Z_init));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_msvar_hamiltonFilter", (DL_FUNC) &_msvar_hamiltonFilter, 7},
+    {"_msvar_predict_cpp", (DL_FUNC) &_msvar_predict_cpp, 9},
     {NULL, NULL, 0}
 };
 

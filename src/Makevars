@@ -1,1 +1,1 @@
-PKG_CXXFLAGS=-O3
+PKG_CXXFLAGS = -O3 -march=native

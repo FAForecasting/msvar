@@ -8,3 +8,9 @@ hamiltonFilter <- function(bigt, m, p, h, e, sig2, Qhat) {
     .Call(`_msvar_hamiltonFilter`, bigt, m, p, h, e, sig2, Qhat)
 }
 
+#' predict_internal
+#'
+predict_cpp <- function(samples, Q, Bk, sigmaU, fp_last, h, m, p, Z_init) {
+    .Call(`_msvar_predict_cpp`, samples, Q, Bk, sigmaU, fp_last, h, m, p, Z_init)
+}
+
