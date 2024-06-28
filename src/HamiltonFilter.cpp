@@ -1,4 +1,5 @@
 #include <RcppEigen.h>
+#include <algorithm>
 
 // [[Rcpp::depends(RcppEigen)]]
 
@@ -25,7 +26,7 @@ Rcpp::List hamiltonFilter(
     for (int itert = 0; itert < bigt - p; itert++) {
       Eigen::RowVectorXd tmpfit = e.middleCols(iterh * m, m).row(itert);
       Eigen::MatrixXd matmultwo = tmpfit * invsig2 * tmpfit.transpose();
-      ylik(itert, iterh) = std::exp(-(m / 2.0) * std::log(2.0 * M_PI) - (0.5 * std::log(detsig2)) - (0.5 * matmultwo(0, 0)));
+      ylik(itert, iterh) = std::max(std::exp(-(m / 2.0) * std::log(2.0 * M_PI) - (0.5 * std::log(detsig2)) - (0.5 * matmultwo(0, 0))), std::numeric_limits<double>::epsilon());
     }
   }
 
@@ -69,5 +70,5 @@ Rcpp::List hamiltonFilter(
     filtprSt += filtprSt1St.middleCols(i * h, h);
   }
 
-  return Rcpp::List::create(Rcpp::Named("filtprSt") = filtprSt, Rcpp::Named("f") = f, Rcpp::Named("e") = e, Rcpp::Named("filtprSt1St") = filtprSt1St);
+  return Rcpp::List::create(Rcpp::Named("filtprSt") = filtprSt, Rcpp::Named("f") = f, Rcpp::Named("e") = e);
 }

@@ -9,7 +9,7 @@ HamiltonFilter <- function(bigt, m, p, h, e, sig2, Qhat) {
     for (itert in seq_len(bigt - p)) {
       tmpfit <- e[itert, , iterh]
       matmultwo <- tmpfit %*% invsig2 %*% tmpfit
-      ylik[itert, iterh] <- exp(-(m / 2) * log(2 * pi) - (0.5 * log(detsig2)) - (0.5 * matmultwo))
+      ylik[itert, iterh] <- max(exp(-(m / 2) * log(2 * pi) - (0.5 * log(detsig2)) - (0.5 * matmultwo)), .Machine$double.eps)
     }
   }
 
@@ -39,6 +39,7 @@ HamiltonFilter <- function(bigt, m, p, h, e, sig2, Qhat) {
     }
     filt_llfval <- sum(pytSt1St_t1_itert)
     f <- f + log(filt_llfval)
+    if (is.nan(f) || filt_llfval == 0) stop("!!")
 
     pytSt1St_t1_itert <- pytSt1St_t1_itert / filt_llfval
 

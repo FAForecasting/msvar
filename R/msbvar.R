@@ -239,7 +239,6 @@ blkopt <- function(Y, p, thetahat.start, Qhat.start, niter = 10, indms) {
       theta = theta.it, Q = Qhat.it, optstr = "beta0",
       ms.switch = indms, method = "BFGS"
     )$par
-    cat(beta0.it, "\n")
 
     if (length(grep("I", indms)) == 0) beta0.it <- array(beta0.it[1:m], c(m, 1, h))
 
@@ -472,7 +471,6 @@ llf.msar <- function(param.opt, Y, X, p, theta, Q, optstr, ms.switch) {
   # Using residuals, get filtered regime probabilities
   e_cpp <- matrix(e, dim(e)[1])
   sig2_cpp <- matrix(sig2, dim(sig2)[1])
-
 
   HamFilt <- hamiltonFilter(
     bigt = as.integer(n),

@@ -37,7 +37,7 @@ msvar <- function(Y, p, h, niterblkopt = 10) {
   # set sigma initial values
   # first, get residuals from initial model
   # dummy obs are appended, so adjust for those
-  res.im <- init.model$residuals[(m + 2):n, ]
+  res.im <- init.model$residuals[(m + 2):nrow(init.model$residuals), ]
   sig2.start <- (1 / n) * crossprod(res.im, res.im)
 
   # the sig2 starting values need to be different though,
