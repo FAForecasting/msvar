@@ -17,10 +17,6 @@ predict.MSVAR <- function (x, h, samples, Z_init = NULL) {
     Z_init <- tail(embed(x$init.model$Y, x$p), 1)
   }
 
-  # Draw states at time T
-  states <- sample(state_vec, samples, replace = T, prob = tail(x$fp, 1))
-  forecasts <- array(NA, dim = c(h, x$m, samples))
-
   Bk_cpp <- matrix(x$hreg$Bk, dim(x$hreg$Bk)[1])
   sigmaU_cpp <- matrix(NA, nrow(sigmaU[[1]]), nrow(sigmaU[[1]]) * length(sigmaU))
   for (i in seq_along(sigmaU)) {

@@ -1,1 +1,1 @@
-PKG_CXXFLAGS = -O3 -march=native
+PKG_CXXFLAGS = -O3 -march=native -Wno-error
